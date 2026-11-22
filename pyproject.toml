@@ -1,0 +1,22 @@
+[project]
+name = "fcc-loco"
+version = "0.1.0"
+description = "Simulated LOCO on FCC-ee with accelmo's POCO closed-orbit fitter"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+readme = "README.md"
+dependencies = ["accelmo", "pymadng-utils", "xtrack", "numpy", "pandas", "matplotlib"]
+
+[tool.uv.sources]
+accelmo = { git = "https://github.com/jgray-19/accelmo" }
+pymadng-utils = { git = "https://github.com/jgray-19/pymadng-utils" }
+
+[tool.setuptools]
+packages = ["fcc_loco"]
+
+[tool.pytest.ini_options]
+markers = ["slow: spawns MAD-NG and xsuite"]
+addopts = "-m 'not slow'"
+
+[tool.ruff]
+line-length = 100
