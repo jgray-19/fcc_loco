@@ -48,7 +48,6 @@ def main() -> None:
         build_series(correctors, targets),
         correctors,
         out,
-        loss_tolerance=1e-3 * 2 * args.noise**2,
     )
 
     before, after = beta_beats(truth, fitted)

@@ -14,6 +14,8 @@ from fcc_loco.lattice import Corrector
 MAX_ITERATIONS = 100
 INITIAL_LAMBDA = 1e-2  # 0 lets the first step overshoot and MAD-NG loses the closed orbit
 LAMBDA_DECREASE = 0.05  # per accepted step
+# Stop when an accepted step lowers the chi² by less than this fraction (chi² ~ number of readings)
+LOSS_TOLERANCE = 1e-3
 
 
 def build_series(
@@ -37,9 +39,8 @@ def run_fit(
     series: list[ClosedOrbitSeries],
     correctors: list[Corrector],
     output: Path,
-    loss_tolerance: float,
 ) -> tuple[dict[str, float], list[float]]:
-    """Returns ``{<quad>.dk1l: fitted}`` (lower case) and the loss of every accepted iteration."""
+    """Returns ``{<quad>.dk1l: fitted}`` (lower case) and the chi² of every accepted iteration."""
     accelerator = FCC(sequence_file=str(SEQUENCE_FILE), mode="z", errors={"quad": {"k1"}})
     fitter = ClosedOrbitFitter(
         accelerator=accelerator,
@@ -51,8 +52,7 @@ def run_fit(
             max_iterations=MAX_ITERATIONS,
             initial_lambda=INITIAL_LAMBDA,
             lambda_decrease=LAMBDA_DECREASE,
-            loss_relative_tolerance=loss_tolerance,
-            gradient_converged_value=0.0,
+            loss_relative_tolerance=LOSS_TOLERANCE,
         ),
         output_config=OutputConfig(run_log_root=output / "runlog", include_uncertainty=False),
     )
